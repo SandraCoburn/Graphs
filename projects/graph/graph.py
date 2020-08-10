@@ -13,33 +13,101 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2) 
+        else:
+            raise IndexError("nonexisten vertex")
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        return self.vertices[vertex_id]
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # make a queue
+        q = Queue()
+        #enqueue our starting node
+        q.enqueue(starting_vertex)
+        #make a set to track if we've been here before
+        visited = set()
+
+        # while our queue isn't empty
+        while q.size() > 0:
+            ## dequeue whatever's at the front of our line, this is our current_node
+            current_node = q.dequeue()
+            ## if we havent visited this node yet
+            if current_node not in visited:
+                ### mark as visited
+                visited.add(current_node)
+                ### print the vertex
+                print(current_node)
+                ### get its neighbors
+                neighbors = self.get_neighbors(current_node)
+                ### for each of the neighbors
+                for neighbor in neighbors:
+                    #### add to queue
+                    q.enqueue(neighbor)
+
+      
+
+        
+        
+        
+        
+        
+       
+    '''    
+    ------->
+    q = Queue()
+    visited = set(1)
+    current_node = 1
+    neighbors = [2]
+    '''
+    # 1 --> 2
+    #  \
+    #   \
+    #    7
+
+
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # make a stack
+        ## push on our starting node
+
+        # make a set to track if we've been here befoe
+
+        # while our stack isn't empty
+
+        ## pop off whatever's on top, this is current_node
+
+        ## if we haven't visited this vertex before
+        ### mark as visited
+        ### print or /function to perform(added to parameters)
+        ### get its neighbors
+        ### for each of the neighbors
+        #### add to our stack
+    '''
+    s = Stack()
+    visited = set(1)
+    current_node = 1
+    neighbors = [2]
+    '''
+
 
     def dft_recursive(self, starting_vertex):
         """
