@@ -1,6 +1,9 @@
+import random
 class User:
     def __init__(self, name):
         self.name = name
+    def __repr__(self):
+        return f'User({repr(self.name)}'
 
 class SocialGraph:
     def __init__(self):
@@ -27,6 +30,12 @@ class SocialGraph:
         self.last_id += 1  # automatically increment the ID to assign the new user
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
+    
+
+    def reset(self):
+        self.last_id = 0
+        self.users = {}
+        self.friendships = {}
 
     def populate_graph(self, num_users, avg_friendships):
         """
@@ -39,15 +48,52 @@ class SocialGraph:
         The number of users must be greater than the average number of friendships.
         """
         # Reset graph
-        self.last_id = 0
-        self.users = {}
-        self.friendships = {}
-        # !!!! IMPLEMENT ME
+        self.reset()
 
         # Add users
+        for i in range(num_users):
+            self.add_user(f"User {i}")
 
         # Create friendships
+        possible_friendships = []
+        
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
 
+        random.shuffle(possible_friendships)
+
+        for i in range(num_users * avg_friendships // 2):
+            friendships = possible_friendships[i]
+            self.add_friendship(friendships[0], friendships[1])
+
+        '''
+        total_friendships = num_users * avg_friendships
+        # Add users
+        ## use num_users
+        for user in range(num_users):
+            self.add_user(user)
+
+        # Create friendships
+        friendships =[]
+        for user in range(1, self.last_id +1):
+            for friend in range(user + 1, num_users + 1):
+                friendship = (user, friend)
+                friendships.append(friendship)
+
+        ## make a list with all posible friendships
+        # 5 users: [(1,2), (1,2), ()]
+        ### shuffle the list 
+        self.
+
+        ### Take as many as we need
+        total_friendships = num_users * avg_friendships
+        random_friendships = friendships[:total_friendships//2]
+
+        ## add to self.frienships
+        for friendship in random_friendships:
+            self.add_friendship(friendship[0], friendship[1])
+        '''
     def get_all_social_paths(self, user_id):
         """
         Takes a user's user_id as an argument
@@ -65,6 +111,7 @@ class SocialGraph:
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
+    print(sg.users)
     print(sg.friendships)
-    connections = sg.get_all_social_paths(1)
-    print(connections)
+    #connections = sg.get_all_social_paths(1)
+    #print(connections)

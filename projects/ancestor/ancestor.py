@@ -131,6 +131,7 @@ def earliest_ancestor(ancestors, starting_node):
             for parent in parents:
                 new_path = path + [parent]
                 s.push(new_path)
+    #if starting node has no parents
     if starting_node == aged_one:
             return -1
     else:  
