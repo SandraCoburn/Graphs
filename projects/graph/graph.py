@@ -218,25 +218,22 @@ class Graph:
         """
         #new_path = [starting_vertex]
         # Mark our node as visited
+        path = path + [starting_vertex]
         visited.add(starting_vertex)
         # Check if it's our target node if so return
         if starting_vertex == destination_vertex:
             return path
-        if len(path) == 0:
-            path.append(starting_vertex)
         ## iterate over neighbor
         neighbors = self.get_neighbors(starting_vertex)
         ### Check if it's visited
         for neighbor in neighbors:
             if neighbor not in visited:
         ### If not, recurse with a path
-                result = self.dfs_recursive(neighbor, destination_vertex, path + [neighbor],visited)
+                result = self.dfs_recursive(neighbor, destination_vertex, path,visited)
         #### If this recursion returns a path
                 if result is not None:
         ##### Return from here
                     return result
-
-
 
         # new_path = path + [starting_vertex]
         # visited.add(starting_vertex)
