@@ -1,5 +1,4 @@
  
-
 '''
 Write a function that, given the dataset and the ID of an individual in the dataset,
  returns their earliest known ancestor – the one at the farthest distance 
@@ -29,7 +28,8 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        self.vertices[vertex_id] = set()
+        if vertex_id not in self.vertices:
+            self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
@@ -81,14 +81,62 @@ class Graph:
                 else:
                     visited.append(None) 
         return visited
+g = Graph()
+def build_graph(ancestors):
+    for parent, child in ancestors:
+        g.add_vertex(parent)
+        g.add_vertex(child)
+        g.add_edge(child, parent)
+    return g
 
 def earliest_ancestor(ancestors, starting_node):
-    g = Graph()
+  
     # Ancestors is an array of sets
     # Traverse the tree till there is no more ancestors
     # if more than one ancestor have dead ends, return the last value of the longer path
     # check dictionary for vertexes
     # create a graph of vertices and edges using ancestors array
+
+    ## Nodes: people
+    ## Edges: parent, child relationship. When child has a parent
+
+    ### Build our graph, define get_neighbors
+
+    ### Choose algorithm - DFF or BFS will work
+    #### DFS - how would we know if DFS happened to be faster?
+    #### Build a path like we did in search
+    #### But we don't know when to stop until we've seen aeveryone
+    g = build_graph(ancestors)
+    s = Stack()
+    visited = set()
+    s.push([starting_node])
+
+    longest_path = []
+    aged_one = -1
+    
+    while s.size() > 0:
+        path = s.pop()
+        current_node = path[-1]
+        #if path is longer, or path is equal but id is smaller
+        if len(path) > len(longest_path) or (len(path) == len(longest_path) and current_node < aged_one):
+            longest_path = path
+            aged_one = longest_path[-1] # if no ancestors returns last one
+
+        if current_node not in visited:
+            visited.add(current_node)
+
+            parents = g.get_parents(current_node)
+            
+
+            for parent in parents:
+                new_path = path + [parent]
+                s.push(new_path)
+    if starting_node == aged_one:
+            return -1
+    else:  
+        return longest_path[-1] #last thing in array
+
+'''
     for ancestor in ancestors:
         #use the second element of each set as the key
         if ancestor[0] not in g.vertices:
@@ -114,9 +162,6 @@ def earliest_ancestor(ancestors, starting_node):
     else:
         print("result is: ",result)
         return result
-    
-
-
-
+'''
 #earliest_ancestor([(1, 3), (2, 3), (3, 6), (5, 6),], 2)
-earliest_ancestor([(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)], 5)
+print(earliest_ancestor([(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)], 6))
