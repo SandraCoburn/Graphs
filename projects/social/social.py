@@ -1,4 +1,18 @@
 import random
+
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+    def size(self):
+        return len(self.queue)
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -10,8 +24,10 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
+        self.counter = 0
 
     def add_friendship(self, user_id, friend_id):
+        self.counter += 1
         """
         Creates a bi-directional friendship
         """
@@ -104,14 +120,42 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        # Use BFS to touch every single node with the shortest path
+        # Bring the queue 
+        queue = Queue()
+        path = [user_id]
+        queue.enqueue(path)
+
+        while queue.size() > 0:
+            current_path = queue.dequeue()
+            new_user_id = current_path[-1]
+
+            if new_user_id not in visited:
+                visited[new_user_id] = current_path
+                print("visited: ", visited)
+                #iterate through the frienships of current user
+                friends = self.friendships[new_user_id]
+                for friend in friends:
+                    #make a copy of the path
+                    path_copy = list(current_path)
+                    path_copy.append(friend)
+                    queue.enqueue(path_copy)
+                    print("friends: ", path_copy)
+        
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
-    print(sg.users)
-    print(sg.friendships)
-    #connections = sg.get_all_social_paths(1)
-    #print(connections)
+    sg.populate_graph(10, 5)
+   
+    connections = sg.get_all_social_paths(1)
+    total_paths_length = 0
+    for user_id in connections:
+        total_paths_length += len(connections[user_id])
+    average_separation = total_paths_length / len(connections)
+    print("separation: ", average_separation)
+    print("connections: ",connections)
+    #print("users: ", sg.users)
+    print("friendships: ", sg.friendships)
+    print("Counter: ", sg.counter)

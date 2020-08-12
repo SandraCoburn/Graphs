@@ -105,7 +105,7 @@ def earliest_ancestor(ancestors, starting_node):
     ### Choose algorithm - DFF or BFS will work
     #### DFS - how would we know if DFS happened to be faster?
     #### Build a path like we did in search
-    #### But we don't know when to stop until we've seen aeveryone
+    #### But we don't know when to stop until we've seen everyone
     g = build_graph(ancestors)
     s = Stack()
     visited = set()
