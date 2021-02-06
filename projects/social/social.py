@@ -1,5 +1,5 @@
 import random
-
+import time
 class Queue():
     def __init__(self):
         self.queue = []
@@ -33,11 +33,14 @@ class SocialGraph:
         """
         if user_id == friend_id:
             print("WARNING: You cannot be friends with yourself")
+            return False
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
             print("WARNING: Friendship already exists")
+            return False
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
+            return True
 
     def add_user(self, name):
         """
@@ -53,7 +56,7 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
 
-    def populate_graph(self, num_users, avg_friendships):
+    def populate_graph(self, num_users, avg_friendships): # O(1/2 * n^2) == O(n^2)
         """
         Takes a number of users and an average number of friendships
         as arguments
@@ -110,6 +113,33 @@ class SocialGraph:
         for friendship in random_friendships:
             self.add_friendship(friendship[0], friendship[1])
         '''
+    def populate_graph_linear(self, num_users, avg_friendships):
+        # Reset graph
+        self.reset()
+
+        # Add users
+        for i in range(num_users):
+            self.add_user(f"User {i}")
+
+        # Create friendships
+        target_friendships = num_users * avg_friendships
+        friendships_successfully_added = 0
+        failures = 0
+        
+        #Continue this till we have the number of friendships as we need:
+        while friendships_successfully_added < target_friendships:
+            ## Choose two random numbers (integers) between 1 and self.last_id
+            user_id = random.randint(1, self.last_id)
+            friend_id = random.randint(1, self.last_id)
+            ## Try to make that friendship
+            added_friendship = self.add_friendship(user_id, friend_id)
+            ## If it works increment the friendship's counter
+            if added_friendship:
+                friendships_successfully_added += 2
+            else:
+                failures += 1
+        print(f"failures: {failures}")
+
     def get_all_social_paths(self, user_id):
         """
         Takes a user's user_id as an argument
@@ -147,15 +177,26 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
+
+    start_time = time.time()
     sg.populate_graph(10, 5)
-   
-    connections = sg.get_all_social_paths(1)
-    total_paths_length = 0
-    for user_id in connections:
-        total_paths_length += len(connections[user_id])
-    average_separation = total_paths_length / len(connections)
-    print("separation: ", average_separation)
-    print("connections: ",connections)
-    #print("users: ", sg.users)
-    print("friendships: ", sg.friendships)
-    print("Counter: ", sg.counter)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print(f'Quadratic time: {total_time} seconds')
+
+    start_time = time.time()
+    sg.populate_graph_linear(10, 5)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print(f'Linear time: {total_time} seconds')
+
+    # connections = sg.get_all_social_paths(1)
+    # total_paths_length = 0
+    # for user_id in connections:
+    #     total_paths_length += len(connections[user_id])
+    # average_separation = total_paths_length / len(connections)
+    # print("separation: ", average_separation)
+    # print("connections: ",connections)
+    # #print("users: ", sg.users)
+    # print("friendships: ", sg.friendships)
+    # print("Counter: ", sg.counter)
